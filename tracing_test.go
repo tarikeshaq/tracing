@@ -239,25 +239,37 @@ func TestTokenActions(t *testing.T) {
 	}
 
 	goVecOutputFiles := []string{"GoVector-client1-Log.txt", "GoVector-client2-Log.txt"}
-	goVecExpected := [][]string{
+	goVecExpected := [][][]string{{
 		{
 			"client1 {\"client1\":1}",
 			"Initialization Complete",
 			"client1 {\"client1\":2}",
 			"INFO [client1] PrepareTokenTrace",
-		},
+		}}, {
 		{
 			"client2 {\"client2\":1}",
 			"Initialization Complete",
 			"client2 {\"client2\":2, \"client1\":2}",
 			"INFO [client2] ReceiveTokenTrace Token=[167 99 108 105 101 110 116 49 192 129 167 99 108 105 101 110 116 49 2]",
 		},
-	}
+		{
+			"client2 {\"client2\":1}",
+			"Initialization Complete",
+			"client2 {\"client1\":2, \"client2\":2}",
+			"INFO [client2] ReceiveTokenTrace Token=[167 99 108 105 101 110 116 49 192 129 167 99 108 105 101 110 116 49 2]",
+		},
+	}}
 	for i, goVecOutputFile := range goVecOutputFiles {
 		goVecOutputs := readGoVectorOutputFile(t, goVecOutputFile)
-		fmt.Println(goVecOutputs[0])
-		if !reflect.DeepEqual(goVecOutputs, goVecExpected[i]) {
-			t.Fatalf("expected go vector output %v did not equal actual go vector output %v", goVecExpected[i], goVecOutputs)
+		validOutput := false
+		for _, expected := range goVecExpected[i] {
+			if reflect.DeepEqual(goVecOutputs, expected) {
+				validOutput = true
+				break
+			}
+		}
+		if !validOutput {
+			t.Fatalf("expected go vector output %v did not equal actual go vector output %v", goVecExpected[i][0], goVecOutputs)
 		}
 	}
 }

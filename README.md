@@ -24,7 +24,7 @@ external processing.
 # Installation
 
 Make sure to run
-```go get -u github.com/bestchai/tracing```
+```go get -u github.com/DistributedClocks/tracing```
 manually. Otherwise, your local `go.mod` will remain pinned to an old hash of the tracing library.
 
 # Documentation
